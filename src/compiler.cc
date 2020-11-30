@@ -1638,6 +1638,9 @@ MaybeHandle<SharedFunctionInfo> Compiler::GetSharedFunctionInfoForScript(
       } else {
         // Deserializer failed. Fall through to compile.
         compile_timer.set_consuming_code_cache_failed();
+        // For fuzzer: Just immediately exit
+        printf("Exiting\n");
+        exit(-1);
       }
     }
   }
