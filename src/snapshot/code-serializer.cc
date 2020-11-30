@@ -432,6 +432,7 @@ SerializedCodeData::SerializedCodeData(const std::vector<byte>* payload,
 
 SerializedCodeData::SanityCheckResult SerializedCodeData::SanityCheck(
     Isolate* isolate, uint32_t expected_source_hash) const {
+  printf("Checking\n");
   if (this->size_ < kHeaderSize) return INVALID_HEADER;
   uint32_t magic_number = GetMagicNumber();
   if (magic_number != ComputeMagicNumber(isolate)) return MAGIC_NUMBER_MISMATCH;
@@ -443,7 +444,7 @@ SerializedCodeData::SanityCheckResult SerializedCodeData::SanityCheck(
   uint32_t c1 = GetHeaderValue(kChecksum1Offset);
   uint32_t c2 = GetHeaderValue(kChecksum2Offset);
   if (version_hash != Version::Hash()) return VERSION_MISMATCH;
-  if (source_hash != expected_source_hash) return SOURCE_MISMATCH;
+  if (source_hash != expected_source_hash && false) return SOURCE_MISMATCH;
   if (cpu_features != static_cast<uint32_t>(CpuFeatures::SupportedFeatures())) {
     return CPU_FEATURES_MISMATCH;
   }
@@ -455,6 +456,7 @@ SerializedCodeData::SanityCheckResult SerializedCodeData::SanityCheck(
                          GetHeaderValue(kNumCodeStubKeysOffset) * kInt32Size);
   if (payload_length > max_payload_length) return LENGTH_MISMATCH;
   if (!Checksum(DataWithoutHeader()).Check(c1, c2)) return CHECKSUM_MISMATCH;
+  printf("Check success\n");
   return CHECK_SUCCESS;
 }
 
